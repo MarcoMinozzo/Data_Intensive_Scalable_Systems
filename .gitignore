@@ -1,0 +1,53 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Data (large)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+*.h5
+*.hdf5
+
+# Trained checkpoints (large)
+outputs/models/*
+!outputs/models/.gitkeep
+
+# Keep evaluation artefacts tracked (small)
+# outputs/figures and outputs/metrics are committed
+
+# Logs / caches
+logs/
+*.log
+.cache/
+
+# Local tooling / extracted class materials (very large)
+Material de apoio/
+Material\ de\ apoio/
+paper/IEEEtran/
+paper/_body_extract.tex
+paper/main_article_backup.tex
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.synctex.gz
+_submission_code_clean/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+paper/ieeetran.zip

@@ -1,0 +1,78 @@
+{
+  "tag": "real_only",
+  "accuracy": 0.6708004509582863,
+  "macro_f1": 0.6477007339237154,
+  "weighted_f1": 0.6613806921382502,
+  "per_class": {
+    "0": {
+      "name": "Disturbed",
+      "precision": 0.40860215053763443,
+      "recall": 0.2345679012345679,
+      "f1": 0.2980392156862745,
+      "support": 162
+    },
+    "1": {
+      "name": "Merging",
+      "precision": 0.6306620209059234,
+      "recall": 0.6510791366906474,
+      "f1": 0.6407079646017699,
+      "support": 278
+    },
+    "2": {
+      "name": "Round Smooth",
+      "precision": 0.697029702970297,
+      "recall": 0.8866498740554156,
+      "f1": 0.7804878048780488,
+      "support": 397
+    },
+    "3": {
+      "name": "In-between Round Smooth",
+      "precision": 0.6792452830188679,
+      "recall": 0.7105263157894737,
+      "f1": 0.6945337620578779,
+      "support": 304
+    },
+    "4": {
+      "name": "Cigar Shaped Smooth",
+      "precision": 0.5961538461538461,
+      "recall": 0.62,
+      "f1": 0.6078431372549019,
+      "support": 50
+    },
+    "5": {
+      "name": "Barred Spiral",
+      "precision": 0.6151419558359621,
+      "recall": 0.6351791530944625,
+      "f1": 0.625,
+      "support": 307
+    },
+    "6": {
+      "name": "Unbarred Tight Spiral",
+      "precision": 0.5637583892617449,
+      "recall": 0.610909090909091,
+      "f1": 0.5863874345549738,
+      "support": 275
+    },
+    "7": {
+      "name": "Unbarred Loose Spiral",
+      "precision": 0.5959595959595959,
+      "recall": 0.44923857868020306,
+      "f1": 0.5123010130246021,
+      "support": 394
+    },
+    "8": {
+      "name": "Edge-on without Bulge",
+      "precision": 0.921875,
+      "recall": 0.8309859154929577,
+      "f1": 0.8740740740740741,
+      "support": 213
+    },
+    "9": {
+      "name": "Edge-on with Bulge",
+      "precision": 0.8278145695364238,
+      "recall": 0.8896797153024911,
+      "f1": 0.8576329331046312,
+      "support": 281
+    }
+  }
+}

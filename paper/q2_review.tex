@@ -1,0 +1,70 @@
+% Q2 Paper Review — H9DLGA Repeat TABA
+% Student: Marco Aurélio Minozzo (x24153362)
+% Paper (even digit): LLM Collaboration with Multi-Agent Reinforcement Learning
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\setstretch{1.15}
+\begin{document}
+
+\begin{center}
+{\Large\textbf{Question 2 --- Paper Review}}\\[0.5em]
+{\large H9DLGA Deep Learning and Generative AI (Repeat TABA)}\\[1em]
+\begin{tabular}{ll}
+\textbf{Student name:} & Marco Aur\'{e}lio Minozzo \\
+\textbf{Student number:} & x24153362 \\
+\textbf{Paper reviewed:} & LLM Collaboration with Multi-Agent Reinforcement Learning \\
+\textbf{Length target:} & approximately 1200--1500 words \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent\textit{Note: Following the assessment brief, this review does not cite the paper under review. Judgements are supported by evidence drawn from that paper. Evaluation criteria follow the Elsevier reviewing guidance provided in the module materials.}
+
+\section*{1. Structure, language and title}
+The title clearly signals both the application domain (large language model collaboration) and the methodological family (multi-agent reinforcement learning). That combination is informative for a reader scanning AAAI proceedings. The manuscript is organised in a conventional research-paper order: abstract, introduction, related work, problem formalisation, algorithm, experiments, conclusion and references. Figures of the Dec-POMDP/MAGRPO pipeline and learning curves are placed near the corresponding discussion, which helps readability.
+
+Language is generally fluent and technical. Occasional density in the Dec-POMDP notation section may slow non-MARL readers, but this is expected given the venue. Overall, structure and presentation are appropriate for a conference paper, with only minor opportunities to tighten transitions between writing and coding experimental subsections.
+
+\section*{2. Research problem and abstract}
+The authors address a genuine and timely problem: most large language models are pretrained and often fine-tuned as independent agents, whereas many practical workflows require coordinated multi-agent behaviour. Existing multi-LLM systems frequently rely on prompt-level debate or discussion without parameter updates aimed at cooperation, or they fine-tune agents with carefully hand-crafted individual rewards. The paper argues that such designs can produce conflicting incentives, unstable independent learning, and brittle prompt engineering.
+
+The abstract states the modelling choice (cooperative MARL), the proposed algorithm (MAGRPO), and the empirical domains (writing and coding collaboration). It also claims efficiency and quality gains through cooperation. Those claims are later supported by tables comparing speed/response time and normalised reward components, so the abstract is largely consistent with the body. One improvement would be a more explicit caveat in the abstract about the simplicity of the proxy reward metrics used in writing tasks; without that caveat, a casual reader may overestimate how strongly ``quality'' is measured.
+
+The motivation section is convincing: it contrasts inference-time multi-agent prompting with independent fine-tuning, then positions joint-reward cooperative learning as an alternative. The research gap is therefore clear---not merely ``use several LLMs'', but ``train them jointly for cooperation under a shared objective''.
+
+\section*{3. Literature review}
+Related work is organised into test-time multi-agent interaction and multi-agent fine-tuning, then connected to cooperative MARL. Positive aspects include recognition that debate/role pipelines can communicate poorly or propagate errors, and that independent learners lack strong convergence guarantees in non-stationary multi-agent settings. The discussion of Centralized Training for Decentralized Execution (CTDE) versus fully decentralized training is useful for justifying why a group-relative, Monte Carlo advantage estimate is proposed instead of a large centralised critic.
+
+Critical limitations of the literature treatment include limited depth on reward hacking and evaluation validity for open-ended generation, and relatively light engagement with alternative multi-agent RL algorithms beyond GRPO/MAPPO-inspired ideas. For a paper whose contribution is algorithmic, a sharper contrast against other CTDE policy-gradient methods would strengthen the claim that MAGRPO is the right compromise between scalability and centralised credit assignment. Still, foundational Dec-POMDP and MARL citations are present and help substantiate the study design.
+
+\section*{4. Methodology}
+Methodologically, the paper is the strongest section. Framing LLM collaboration as a Dec-POMDP is appropriate: agents receive partial natural-language observations, act by emitting responses, share a joint reward, and interact with an environment that may include users or external validators over a finite horizon. This formalisation clarifies what is being optimised and why decentralised execution remains desirable for practical multi-LLM systems.
+
+MAGRPO extends group-relative policy optimisation to multiple agents and multiple turns. At each turn, each agent samples a group of responses; joint rewards are obtained; returns are computed; and advantages are estimated by subtracting a group mean return (Equation~1 style Monte Carlo baseline). Policies are then updated with a joint, group-relative objective while each agent still executes using only local history. The authors explicitly note simplifications such as omitting importance sampling/clipping and setting the KL coefficient to zero to allow larger deviation from the base model. That transparency is welcome, but it also raises stability and trust-region concerns that deserve more analysis.
+
+Evidence of sound design includes: (i)~shared/joint rewards intended to avoid conflicting individual incentives; (ii)~sequence-level actions rather than token-level MARL, motivated by shorter horizons and more meaningful rewards; and (iii)~an algorithm listing that makes the training loop auditable. Areas for improvement include clearer theoretical discussion of credit assignment when agents specialise asymmetrically, and more justification for hyperparameter choices that are deferred to the appendix. Reproducibility would benefit from a concise main-text statement of model sizes, group size $G$, horizon $H$, and training steps for each experiment rather than relying so heavily on supplementary material.
+
+Overall, the methodology is novel enough for a conference contribution and is explained with sufficient technical detail to understand what was implemented, even if some engineering choices remain only partially motivated.
+
+\section*{5. Evaluation and results}
+Experiments cover writing collaboration (TLDR summarization and arXiv abstract expansion) and coding collaboration (HumanEval-related and a constructed CoopHumanEval set), using dual smaller coder/general models compared against single larger models and several prompting multi-agent baselines (parallel, sequential, one-round discussion).
+
+Table~1 is particularly useful: MAGRPO reports substantially higher speed than a single comparable-parameter model and strong normalised structure/consistency/coherence returns on both writing datasets. Learning curves show generally increasing cooperative returns, with an interesting temporary drop in style consistency early in TLDR training before realignment---a qualitative detail that makes the optimisation story more credible than monotone plots alone. Coding experiments further show that dataset construction matters: noisy HumanEval items that are poorly suited to decomposition destabilise cooperation, whereas CoopHumanEval yields higher returns and lower variance, especially in multi-turn settings.
+
+These results support the claim that joint training can improve efficiency and cooperative reward relative to untuned prompt pipelines. However, evaluation has important caveats. Writing quality metrics (length structure, Jaccard-style consistency, transition-word coherence) are acknowledged as simple proxies; they may not capture factual faithfulness, usefulness, or human preference. Coding rewards combining structure, syntax, tests and cooperation are stronger where unit tests exist, yet cooperation bonuses and role emergence are still somewhat indirectly measured. Baselines are prompt-only and not fine-tuned with the same compute budget as MAGRPO, so part of the gain may come from fine-tuning itself rather than the multi-agent objective specifically. A natural improvement would be an ablated single-agent GRPO baseline with matched updates, plus human evaluation on a subset of writing outputs.
+
+I am not re-checking statistical significance calculations, as permitted by the brief; descriptively, the reported trends and table contrasts are coherent with the narrative.
+
+\section*{6. Conclusion, discussion and open research problems}
+The conclusion accurately restates the Dec-POMDP framing, MAGRPO proposal, and empirical findings on writing/coding collaboration. It also invites further MARL methods for scalable LLM teamwork, which matches the open challenges discussed earlier (natural-language representation choices, CTDE scalability limits, and fragile prompt-only coordination).
+
+What could be strengthened is a fuller limitations paragraph in the main text: short horizons, proxy rewards, small numbers of agents (typically two), and dependence on curated cooperative datasets (CHE) all constrain generality. Open problems that the paper itself surfaces---and that future work should tackle---include token-versus-sequence modelling trade-offs, principled reward design that remains human-aligned without brittle proxies, credit assignment with many specialised agents, and stable multi-turn coordination when external feedback is noisy.
+
+\section*{Overall recommendation}
+\textbf{Minor revision / accept with reservations.} The problem is important, the Dec-POMDP formalisation is clear, and MAGRPO is a plausible CTDE-inspired adaptation of GRPO with encouraging efficiency and cooperative-return results. The manuscript would be stronger with matched fine-tuning baselines, more rigorous quality evaluation for writing, and an explicit limitations subsection. Even so, the contribution usefully opens a research direction at the intersection of MARL and multi-LLM systems.
+
+\vspace{1em}
+\noindent\textit{(Approximate word count of review body: $\sim$1450 words.)}
+
+\end{document}
